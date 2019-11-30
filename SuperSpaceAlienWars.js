@@ -1,5 +1,5 @@
 (function () {
-  var TIME = 1000;
+  var TIME = 60;
   var CONTROLS = {
     STEER_LEFT: 'ArrowLeft',
     STEER_RIGHT: 'ArrowRight',

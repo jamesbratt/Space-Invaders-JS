@@ -10,10 +10,12 @@
   var timerDiv = document.getElementById("timer");
   var canvas = document.getElementById("canvas");
   var context = canvas.getContext("2d");
+  var keyCodeMap = {};
 
   var StartGame = function() {
     this.setAttribute("style", "display: none");
     game.start();
+    document.addEventListener('keyup', controlShip);
     document.addEventListener('keydown', controlShip);
   }
 
@@ -24,6 +26,7 @@
     game.time = TIME;
 
     playButton.setAttribute("style", "display: inline");
+    document.removeEventListener('keyup', controlShip);
     document.removeEventListener('keydown', controlShip);
   }
 
@@ -35,21 +38,20 @@
   }
 
   var controlShip = function(e) {
-    switch(e.code) {
-      case CONTROLS.STEER_LEFT:
-        game.spaceship.x = game.spaceship.x - 10;
-        game.updateGame(true);
-        break;
-      case CONTROLS.STEER_RIGHT:
-        game.spaceship.x = game.spaceship.x + 10;
-        game.updateGame(true);
-        break;
-      case CONTROLS.SHOOT: {
-        var missile = new Missile(game.spaceship.x, game.spaceship.y).render();
-        game.missilesFired.push(missile);
-        game.updateGame(true);
-        break;
-      }
+    keyCodeMap[e.code] = e.type == 'keydown';
+
+    if (keyCodeMap[CONTROLS.SHOOT]) {
+      var missile = new Missile(game.spaceship.x, game.spaceship.y).render();
+      game.missilesFired.push(missile);
+      game.updateGame(true);
+    }
+    if (keyCodeMap[CONTROLS.STEER_LEFT]) {
+      game.spaceship.x = game.spaceship.x - 10;
+      game.updateGame(true);
+    }
+    if (keyCodeMap[CONTROLS.STEER_RIGHT]) {
+      game.spaceship.x = game.spaceship.x + 10;
+      game.updateGame(true);
     }
   };
 
@@ -118,7 +120,7 @@
 
       context.clearRect(0, 0, 1000, 400);
 
-      if (this.frame === 1 || everyinterval(150)) {
+      if (this.frame === 1 || everyinterval(40)) {
         var alien = new Alien().render();
         this.aliens.push(alien);
       }
